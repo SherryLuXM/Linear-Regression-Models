@@ -1,0 +1,47 @@
+# LM302A121
+#######################
+## Step 1: load data, form simple linear regression models, and produce visualizations from the models
+
+data <- read.csv(file.choose(), header=T)
+str(data)
+
+cor(data)
+
+mod1 <- lm(Calories ~ Fat, data=data)
+summary(mod1)
+
+par(mfrow=c(3,3))
+plot(data$Calories ~ data$Fat, main="Scatterplot", ylab="Calories", xlab="Fat")
+plot(rstandard(mod1) ~ data$Fat, main="Residuals v Predictor", ylab="Residuals", xlab="Fat")
+qqnorm(rstandard(mod1))
+qqline(rstandard(mod1))
+
+mod2 <- lm(Calories ~ SatFat, data=data)
+summary(mod2)
+
+plot(data$Calories ~ data$SatFat, main="Scatterplot", ylab="Calories", xlab="SatFat")
+plot(rstandard(mod2) ~ data$SatFat, main="Residuals v Predictor", ylab="Residuals", xlab="Fat")
+qqnorm(rstandard(mod2))
+qqline(rstandard(mod2))
+
+mod3 <- lm(Calories ~ Sodium, data=data)
+summary(mod3)
+
+plot(data$Calories ~ data$Sodium, main="Scatterplot", ylab="Calories", xlab="Sodium")
+plot(rstandard(mod3) ~ data$Sodium, main="Residuals v Predictor", ylab="Residuals", xlab="Fat")
+qqnorm(rstandard(mod3))
+qqline(rstandard(mod3))
+
+## Assess the statistical significance based on Analysis of Variance
+anova(mod3)
+anova(mod2)
+
+## Develop a predictive model between Calories and Sodium and use mean of Sodium to get a predicted value for Calories
+new <- data.frame(Sodium = mean(data$Sodium))
+predict(mod3, newdata=new, interval="confidence")
+mean(data$Calories)
+
+new <- data.frame(SatFat = mean(data$SatFat))
+predict(mod2, newdata=new, interval="confidence")
+mean(data$Calories)
+
